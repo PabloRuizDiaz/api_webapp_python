@@ -107,20 +107,28 @@ def personas_tabla():
         return jsonify({'trace': traceback.format_exc()})
 
 
-@app.route("/comparativa")
-def comparativa():
+@app.route("/comparativa?nationality=<natio>")
+def comparativa(natio=None):
     try:
-        # Mostrar todos los registros en un gráfico
-        result = '''<h3>Implementar una función en persona.py
-                    que se llame "age_report"</h3>'''
-        result += '''<h3>Esa funcion debe devolver los datos
-                    de todas las edades ingresadas e realizar
-                    un gráfico "plot" para mostrar en el HTMl</h3>'''
-        result += '''<h3>Bonus track: puede hacer que esta endpoint reciba
-                    como parámetro estático o dinámico que indique la nacionalidad
-                    que se desea estudiar sus edades ingresadas (filtrar las edades
-                    por la nacionalidad ingresada)</h3>'''
-        return (result)
+        numage_natio = persona.age_report(natio)
+
+        num_age = [x[0] for x in numage_natio if x[1] == ]
+
+        fig = plt.figure()
+        ax = fig.add_subplot()
+        
+        ax.splot(x, y, color='g', marker='.')
+        
+        ax.set_title('Edades ingresadas vs cantidad de personas')
+        ax.set_xlabel('Edades')
+        ax.set_ylabel('Cantidad de personas')
+        ax.set_facecolor('whitesmoke')
+
+        output = io.BytesIO()
+        FigureCanvas(fig).print_png(output)
+        plt.close(fig)
+        return Response(output.getvalue(), mimetype='image/png')
+
     except:
         return jsonify({'trace': traceback.format_exc()})
 
