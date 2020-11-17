@@ -90,9 +90,8 @@ def reset():
 def personas():
     try:
         # Alumno: Implemente
-        result = '''<h3>Alumno: Implementar la llamada
-                    al HTML tabla.html
-                    con render_template</h3>'''
+        result = render_template('tabla.html')
+
         return result
     except:
         return jsonify({'trace': traceback.format_exc()})
@@ -107,17 +106,18 @@ def personas_tabla():
         return jsonify({'trace': traceback.format_exc()})
 
 
-@app.route("/comparativa?nationality=<natio>")
-def comparativa(natio=None):
+@app.route("/comparativa")
+def comparativa():
     try:
-        numage_natio = persona.age_report(natio)
+        numage_natio = persona.age_report()
 
-        num_age = [x[0] for x in numage_natio if x[1] == ]
+        num_age = [x[0] for x in numage_natio]
+        age = [x[1] for x in numage_natio]
 
         fig = plt.figure()
         ax = fig.add_subplot()
         
-        ax.splot(x, y, color='g', marker='.')
+        ax.plot(natio, age, color='g', marker='.')
         
         ax.set_title('Edades ingresadas vs cantidad de personas')
         ax.set_xlabel('Edades')
@@ -145,10 +145,15 @@ def registro():
         try:
             # Alumno: Implemente
             # Obtener del HTTP POST JSON el nombre y los pulsos
-            # name = ...
-            # age = ...
-            # nationality = ...
-            # persona.insert(name, int(age), nationality)
+            name = str(request.form.get('name'))
+            age = str(request.form.get('age'))
+            nationality = str(request.form.get('nationality'))
+            
+            if (name is None or nationality is None or age is None):
+                return Response(status=400)
+            
+            persona.insert(name, int(age), nationality)
+            
             return Response(status=200)
         except:
             return jsonify({'trace': traceback.format_exc()})

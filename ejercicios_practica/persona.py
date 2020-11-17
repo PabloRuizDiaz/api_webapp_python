@@ -87,3 +87,22 @@ def report(limit=0, offset=0):
     # Cerrar la conexión con la base de datos
     conn.close()
     return query_results
+
+
+def age_report():
+    conn = sqlite3.connect('persona.db')
+    c = conn.cursor()
+
+    c.execute('''
+            SELECT COUNT(name), age FROM persona
+            GROUP BY age;
+            ''')
+
+    query_output = c.fetchall()
+    
+    if query_output is None:
+        return []
+
+    conn.close()
+
+    return query_output
